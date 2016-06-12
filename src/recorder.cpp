@@ -37,12 +37,21 @@ const bool& AudioRecorder::recording() const {
     return bRecording;
 }
 
-void actionOnCommand(QString textCommand) const {
-    switch(textCommand.toLower()) {
-        case TURN_ON.lower(): break;
-        case TURN_OFF.lower(): break;
-        case DISCOVER.lower(): break;
-        case DIE.lower(): break;
+const QString TURN_ON = "turn on";
+const QString TURN_OFF = "turn off";
+const QString DISCOVER = "discover";
+const QString DIE = "goodbye";
+
+void actionOnCommand(QString textCommand) {
+    QString command = textCommand.toLower().trimmed();
+    if (command == TURN_ON) {
+
+    } else if (command == TURN_OFF) {
+
+    } else if (command == DISCOVER) {
+
+    } else if (command == DIE) {
+
     }
 }
 

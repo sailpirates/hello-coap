@@ -1,14 +1,10 @@
 #ifndef RECORDER
 #define RECORDER
 
+#include <QAudioRecorder>
 #include <QQueue>
 #include <QUrl>
 #include <QJsonDocument>
-
-const QString TURN_ON = "Turn on";
-const QString TURN_OFF = "Turn off";
-const QString DISCOVER = "Discover";
-const QString DIE = "Die";
 
 class AudioRecorder: public QObject {
     Q_OBJECT
