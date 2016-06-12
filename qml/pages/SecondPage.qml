@@ -42,8 +42,17 @@ Page {
             width: parent.width
             spacing: 20
 
-            PageHeader { title: root.dmodel.cur_uri }
-            Label { text: root.dmodel.cur_val }
+            PageHeader { title: dmodel.cur_uri }
+            Label { text: dmodel.cur_val }
+            Label { text: dmodel.cur_uri }
+            Slider
+            { id: light
+                width: parent.width
+                height: 50
+                value: 0
+                maximumValue: 255
+                onValueChanged: dmodel.send_light(light.value)
+            }
         }
     }
 }

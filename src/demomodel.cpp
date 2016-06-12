@@ -49,8 +49,9 @@ void DemoModel::activate(const int i)
        return;
 
    m_reply = m_coap.get(CoapRequest
-                        (QUrl(QString("coap://")
-                              + m_backing[i].uri)));
+                        (QUrl(m_backing[i].uri)));
+
+   set_cur_uri(m_backing[i].uri);
     // query on
 
 
@@ -106,6 +107,14 @@ void DemoModel::refresh()
      }
 }
 
+void DemoModel::send_light(char value)
+{
+    qDebug() << cur_uri();
+
+    m_reply = m_coap.put(CoapRequest(QUrl(cur_uri())),
+                         QByteArray( 1, value));
+}
+
 void DemoModel::onReplyFinished(CoapReply *reply)
 {
     if (reply->error() != CoapReply::NoError) {
@@ -116,8 +125,9 @@ void DemoModel::onReplyFinished(CoapReply *reply)
 
     if (reply->statusCode() == CoapPdu::Content)
     {
-        qDebug() << reply->request().url().path();
-        if (reply->request().url().path()
+        qDebug() << "***" << reply->request().url().path();
+
+        if ((reply->request().url().path())
                 .compare(QString("/.well-known/core")) == 0)
         {
             DevRes reply_dev_res;
@@ -156,10 +166,12 @@ void DemoModel::onReplyFinished(CoapReply *reply)
         }
         else
         {
-            set_cur_uri(reply->request().url().toString());
+            qDebug() << "****" << reply->request().url();
+            // set_cur_uri(reply->request().url().toString());
             set_cur_val(reply->payload().toInt());
         }
     }
+
     reply->deleteLater();
     return;
 }

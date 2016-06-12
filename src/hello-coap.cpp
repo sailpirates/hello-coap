@@ -35,13 +35,11 @@
 #include <sailfishapp.h>
 #include "mycoap.h"
 #include "demomodel.h"
-#include "recorder.h"
 
 
 int main(int argc, char *argv[])
 {
     qmlRegisterType<DemoModel>("com.example", 1, 0, "DemoModel");
-    qmlRegisterType<AudioRecorder>("org.sailpirates.components", 1, 0, "AudioRecorder");
 
     //MyCoAP mcoap(rootObject);
     //mcoap.observe(QUrl("coap://vs0.inf.ethz.ch/obs"));

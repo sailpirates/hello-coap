@@ -24,6 +24,7 @@ public:
 
     Q_INVOKABLE void activate(const int i);
     Q_INVOKABLE void refresh();
+    Q_INVOKABLE void send_light(char value);
 
     Q_PROPERTY(QString cur_uri READ cur_uri WRITE set_cur_uri NOTIFY cur_uriChanged)
     Q_PROPERTY(int cur_val READ cur_val WRITE set_cur_val NOTIFY cur_valChanged)
@@ -50,6 +51,7 @@ public slots:
 
     void set_cur_val(int cur_val)
     {
+        qDebug() << "set cur val" << cur_val;
         if (m_cur_val == cur_val)
             return;
 
