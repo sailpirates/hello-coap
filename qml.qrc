@@ -1,0 +1,7 @@
+<RCC>
+    <qresource prefix="/">
+        <file>main.qml</file>
+        <file>coap_on.png</file>
+        <file>coap_off.png</file>
+    </qresource>
+</RCC>
