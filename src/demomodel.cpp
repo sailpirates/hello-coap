@@ -7,6 +7,13 @@ DemoModel::DemoModel(QObject *parent) :
     QAbstractListModel(parent),
     m_coap(this)
 {
+    DevRes dr;
+    dr.name = "n/a";
+    dr.uri = "127.0.0.1/nan";
+    m_backing.push_back(dr);
+    dr.uri = "127.0.0.2/nan";
+    m_backing.push_back(dr);
+
     connect(&m_coap, &CoapNetworkAccessManager::replyFinished, this, &DemoModel::onReplyFinished);
     connect(&m_coap, &CoapNetworkAccessManager::notificationReceived, this, &DemoModel::onNotificationReceived);
 }
@@ -16,11 +23,9 @@ QVariant DemoModel::data(const QModelIndex &index, int role) const {
     if(!index.isValid()) {
         return QVariant();
     }
-    if(role == NameRole) {
+    if (role == NameRole) {
         const DevRes& devres = m_backing[index.row()];
-        return QVariant(devres.uri
-                + QString(" - ")
-                + devres.name);
+        return QVariant(devres.uri);
     }
     return QVariant();
 }
@@ -64,6 +69,7 @@ void DemoModel::activate(const int i)
 
 void DemoModel::refresh()
 {
+
     QList<QHostAddress> addr_list = QNetworkInterface::allAddresses();
     foreach (QHostAddress addr, addr_list)
     {
@@ -80,8 +86,8 @@ void DemoModel::refresh()
                 QHostAddress dev_addr(ndev);
                 m_reply = m_coap.get(CoapRequest
                                      (QUrl("coap://" + dev_addr.toString()
-                                     //      + "/.well-known/core")));
-                                     + "/led1")));
+                                           + "/.well-known/core")));
+                                    // + "/led1")));
             }
         }
     }
@@ -111,17 +117,20 @@ void DemoModel::onReplyFinished(CoapReply *reply)
     {
         qDebug() << reply->request().url().path();
         if (reply->request().url().path()
-                .compare(QString("/./well-known/core")))
+                .compare(QString("/.well-known/core")) == 0)
         {
             DevRes reply_dev_res;
             QString payload_str = QString::fromLatin1(reply->payload());
+            qDebug() << payload_str;
             QStringList dev_strlist = payload_str.split(",");
             foreach (QString str, dev_strlist)
             {
                 QStringList res_params = str.split(";");
+                qDebug() << res_params;
                 if (res_params.isEmpty())
                     continue;
                 QString res_str = res_params.first();
+                qDebug() << res_str;
                 if (res_str.length() < 4)
                     continue;
                 res_str.chop(1); // chip last'>'
@@ -129,11 +138,13 @@ void DemoModel::onReplyFinished(CoapReply *reply)
 
                 reply_dev_res.uri = reply->request().url().toString()
                         + QString("/") + res_str;
+                qDebug() << reply_dev_res.uri;
+
                 res_params.pop_front();
                 if (res_params.isEmpty())
                     continue;
                 reply_dev_res.name = res_params.first();
-                beginInsertRows(QModelIndex(), m_backing.size(), m_backing.size() + 1);
+                beginInsertRows(QModelIndex(), m_backing.size() - 1, m_backing.size());
                 m_backing.push_back(reply_dev_res);
                 endInsertRows();
             }
