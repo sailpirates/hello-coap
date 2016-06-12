@@ -30,47 +30,24 @@
 
 #ifdef QT_QML_DEBUG
 #include <QtQuick>
+#include <QDebug>
 #endif
 
-#include <sailfishapp.h>
-#include "mycoap.h"
-#include "demomodel.h"
-#include "recorder.h"
+#include <QScopedPointer>
 
+#include <sailfishapp.h>
+#include "recorder.h"
 
 int main(int argc, char *argv[])
 {
-    qmlRegisterType<DemoModel>("com.example", 1, 0, "DemoModel");
+    // SailfishApp::main() will display "qml/template.qml", if you need more
+    // control over initialization, you can use:
+    //
+    //   - SailfishApp::application(int, char *[]) to get the QGuiApplication *
+    //   - SailfishApp::createView() to get a new QQuickView * instance
+    //   - SailfishApp::pathTo(QString) to get a QUrl to a resource file
+    //
+    // To display the view, call "show()" (will show fullscreen on device).    
     qmlRegisterType<AudioRecorder>("org.sailpirates.components", 1, 0, "AudioRecorder");
-
-    //MyCoAP mcoap(rootObject);
-    //mcoap.observe(QUrl("coap://vs0.inf.ethz.ch/obs"));
-
     return SailfishApp::main(argc, argv);
-
-    /*
-    QGuiApplication *app = SailfishApp::application(argc, argv);
-
-    QQmlEngine engine;
-
-    QQmlComponent component(&engine, "qml/hello-coap.qml");
-    QObject *object = component.create();
-    if (!object)
-    {
-        qDebug() << "object null";
-        return 1;
-    }
-
-    QObject *rootObject = object->findChild<QObject*>("textObject");
-    if (!rootObject)
-    {
-        qDebug()<<"textObject null";
-        return 2;
-    }
-
-    MyCoAP *mcoap = new MyCoAP(rootObject);
-        return app->exec();
-    mcoap->observe(QUrl("coap://vs0.inf.ethz.ch/obs"));
-    */
 }
-

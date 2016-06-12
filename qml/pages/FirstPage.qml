@@ -63,6 +63,13 @@ Page {
                 dmodel.activate(index);
             }
         }
+
+        PushUpMenu {
+            MenuItem {
+                text: "Sound assistant"
+                onClicked: pageStack.push(Qt.resolvedUrl("ThirdPage.qml"));
+            }
+        }
     }
 /*
     SilicaListView {

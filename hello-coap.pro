@@ -13,12 +13,17 @@
 TARGET = hello-coap
 
 CONFIG += sailfishapp c++11
+QT += multimedia
 
 HEADERS += src/mycoap.h \
-            src/demomodel.h
+           src/demomodel.h \
+           src/hound_driver.h \
+           src/recorder.h
 SOURCES += src/hello-coap.cpp \
            src/mycoap.cpp \
-    src/demomodel.cpp
+           src/demomodel.cpp \
+           src/recorder.cpp \
+           src/hound_driver.cpp
 
 RESOURCES += qml.qrc
 
@@ -45,4 +50,7 @@ CONFIG += sailfishapp_i18n
 TRANSLATIONS += translations/hello-coap-de.ts
 
 include(src/qtcoap/coap/coap.pri)
+
+DISTFILES += \
+    qml/pages/ThirdPage.qml
 
