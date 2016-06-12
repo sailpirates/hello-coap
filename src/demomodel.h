@@ -74,7 +74,8 @@ private:
         QString uri;
         QString name;
     };
-    QVector<DevRes> m_backing;
+    QList<DevRes> m_backing;
+
     QString m_cur_uri;
     int m_cur_val;
 };

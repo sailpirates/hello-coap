@@ -10,9 +10,9 @@ DemoModel::DemoModel(QObject *parent) :
     DevRes dr;
     dr.name = "n/a";
     dr.uri = "127.0.0.1/nan";
-    m_backing.push_back(dr);
+    m_backing.append(dr);
     dr.uri = "127.0.0.2/nan";
-    m_backing.push_back(dr);
+    m_backing.append(dr);
 
     connect(&m_coap, &CoapNetworkAccessManager::replyFinished, this, &DemoModel::onReplyFinished);
     connect(&m_coap, &CoapNetworkAccessManager::notificationReceived, this, &DemoModel::onNotificationReceived);
@@ -25,7 +25,8 @@ QVariant DemoModel::data(const QModelIndex &index, int role) const {
     }
     if (role == NameRole) {
         const DevRes& devres = m_backing[index.row()];
-        return QVariant(devres.uri);
+        QString str = devres.uri + QString(" , ") + devres.name;
+        return QVariant(str);
     }
     return QVariant();
 }

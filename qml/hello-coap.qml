@@ -36,9 +36,7 @@ import com.example 1.0
 ApplicationWindow
 {
     id: root
-    DemoModel {
-                id: dmodel
-            }
+    property var dmodel: DemoModel { }
     initialPage: Component { FirstPage { } }
     cover: Qt.resolvedUrl("cover/CoverPage.qml")
     allowedOrientations: Orientation.All
