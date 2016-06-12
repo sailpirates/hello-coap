@@ -135,17 +135,21 @@ void DemoModel::onReplyFinished(CoapReply *reply)
                 if (res_str.length() < 4)
                     continue;
                 res_str.chop(1); // chip last'>'
-                res_str.right(res_str.length() - 2); // cutoff first '</'
+                res_str = res_str.right(res_str.length() - 2); // cutoff first '</'
 
-                reply_dev_res.uri = reply->request().url().toString()
-                        + QString("/") + res_str;
+                reply_dev_res.uri = reply->request().url().toString();
+                reply_dev_res.uri.chop(reply->request()
+                                       .url().path().length());
+
+                reply_dev_res.uri += QString("/") + res_str;
                 qDebug() << reply_dev_res.uri;
 
                 res_params.pop_front();
                 if (res_params.isEmpty())
                     continue;
                 reply_dev_res.name = res_params.first();
-                beginInsertRows(QModelIndex(), m_backing.size() - 1, m_backing.size());
+                beginInsertRows(QModelIndex(),
+                                m_backing.size(), m_backing.size());
                 m_backing.push_back(reply_dev_res);
                 endInsertRows();
             }
