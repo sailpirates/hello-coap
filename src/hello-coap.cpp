@@ -33,42 +33,13 @@
 #endif
 
 #include <sailfishapp.h>
-#include "mycoap.h"
 #include "demomodel.h"
-
+#include "recorder.h"
 
 int main(int argc, char *argv[])
 {
+    qmlRegisterType<AudioRecorder>("org.sailpirates.components", 1, 0, "AudioRecorder");
     qmlRegisterType<DemoModel>("com.example", 1, 0, "DemoModel");
-
-    //MyCoAP mcoap(rootObject);
-    //mcoap.observe(QUrl("coap://vs0.inf.ethz.ch/obs"));
-
     return SailfishApp::main(argc, argv);
-
-    /*
-    QGuiApplication *app = SailfishApp::application(argc, argv);
-
-    QQmlEngine engine;
-
-    QQmlComponent component(&engine, "qml/hello-coap.qml");
-    QObject *object = component.create();
-    if (!object)
-    {
-        qDebug() << "object null";
-        return 1;
-    }
-
-    QObject *rootObject = object->findChild<QObject*>("textObject");
-    if (!rootObject)
-    {
-        qDebug()<<"textObject null";
-        return 2;
-    }
-
-    MyCoAP *mcoap = new MyCoAP(rootObject);
-        return app->exec();
-    mcoap->observe(QUrl("coap://vs0.inf.ethz.ch/obs"));
-    */
 }
 

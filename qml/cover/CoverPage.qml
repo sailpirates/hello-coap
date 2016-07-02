@@ -31,22 +31,38 @@
 import QtQuick 2.0
 import Sailfish.Silica 1.0
 
-CoverBackground {
-    Label {
+CoverBackground
+{
+    Label
+    {
         id: label
         anchors.centerIn: parent
-        text: qsTr("My Cover")
+        text: qsTr("hello-coap")
     }
 
     CoverActionList {
         id: coverAction
 
         CoverAction {
-            iconSource: "image://theme/icon-cover-next"
+            iconSource: "image://theme/icon-cover-sync"
+            onTriggered:
+            {
+                pageStack.pop();
+                pageStack.completeAnimation();
+                dmodel.refresh(); // crazy shit
+                root.activate();
+            }
         }
 
         CoverAction {
-            iconSource: "image://theme/icon-cover-pause"
+            iconSource: "image://theme/icon-cover-unmute"
+            onTriggered:
+            {
+                pageStack.pop();
+                pageStack.push(Qt.resolvedUrl("../pages/ThirdPage.qml")); // fuck this
+                pageStack.completeAnimation();
+                root.activate();
+            }
         }
     }
 }

@@ -32,30 +32,60 @@ import QtQuick 2.0
 import Sailfish.Silica 1.0
 
 
-Page {
+Page
+{
     id: page
-    SilicaListView {
-        PullDownMenu {
-            MenuItem {
+
+//    ListModel {
+//        id: dummy
+//        ListElement { text: "Alice" }
+//        ListElement { text: "Bob" }
+//        ListElement { text: "Jane" }
+//        ListElement { text: "Harry" }
+//        ListElement { text: "Wendy" }
+//    }
+    SilicaListView
+    {
+        PullDownMenu
+        {
+            MenuItem
+            {
                 text: "Discover"
                 onClicked: dmodel.refresh();
-                //console.log("Discover pulled")
+            }
+        }
+        PushUpMenu
+        {
+            MenuItem
+            {
+                text: "Voice Input"
+                onClicked: pageStack.push(Qt.resolvedUrl("ThirdPage.qml")); // fuck!
             }
         }
 
         anchors.fill: parent
-
-        model: root.dmodel
 
         header: PageHeader {
             id: header
             title: "Available devices"
         }
 
+        model: root.dmodel
+
         delegate: BackgroundItem {
             Label {
-                x: Theme.horizontalPageMargin
+                // qml model-delegate-view thing is a complete unholy mess
+                // you can't display model data() with displayRole, it works only with widgets
+                // so, you can't reuse displayRole and it's ugly and stupid -- need to implement nameRoles and
+                // I hope this is not true.
+                // if you uncomment dummy ListModel from top
+                // and replace the text entry at the bottom with
+                // text: modelData
+                // you get the good picture and all is fine
+                // whe trying to do so with abstractmodel you will get
+                // ReferenceError: textRole is not defined
                 text: name
+                x: Theme.horizontalPageMargin
             }
             onClicked:
             {
@@ -64,21 +94,6 @@ Page {
             }
         }
     }
-/*
-    SilicaListView {
-
-        anchors.fill: parent
-
-    }
-    */
-/*
-    Label {
-        id: rootText
-        objectName: "textObject"
-        property string light: "0"
-        text: qsTr("Hello, light: ")+light
-        anchors.centerIn: parent
-    }*/
 }
 
 

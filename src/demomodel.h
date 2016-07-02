@@ -11,10 +11,6 @@ class DemoModel : public QAbstractListModel
 {
     Q_OBJECT
 public:
-    enum DemoRoles {
-        NameRole = Qt::UserRole + 1,
-    };
-
     explicit DemoModel(QObject *parent = 0);
 
     virtual int rowCount(const QModelIndex&) const;
@@ -76,7 +72,7 @@ private:
         QString uri;
         QString name;
     };
-    QList<DevRes> m_backing;
+    QVector<DevRes> m_backing;
 
     QString m_cur_uri;
     int m_cur_val;

@@ -48,13 +48,17 @@ Page {
         }
 
         Button {
+            id: rec_btn
+            text: "START RECORDING"
             anchors.bottom: text.top
             onClicked: {
                 if (recorder.recording) {
+                    rec_btn.text = "START RECORDING"
                     console.log('STOP RECORDING');
                     recorder.stop();
                 } else {
                     console.log('START RECORDING');
+                    rec_btn.text = "RECORDING... PRESS TO STOP"
                     recorder.record();
                 }
             }

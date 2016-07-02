@@ -7,35 +7,25 @@ DemoModel::DemoModel(QObject *parent) :
     QAbstractListModel(parent),
     m_coap(this)
 {
-    DevRes dr;
-    dr.name = "n/a";
-    dr.uri = "127.0.0.1/nan";
-    m_backing.append(dr);
-    dr.uri = "127.0.0.2/nan";
-    m_backing.append(dr);
-
     connect(&m_coap, &CoapNetworkAccessManager::replyFinished, this, &DemoModel::onReplyFinished);
     connect(&m_coap, &CoapNetworkAccessManager::notificationReceived, this, &DemoModel::onNotificationReceived);
 }
 
+QHash<int, QByteArray> DemoModel::roleNames() const {
+    QHash<int, QByteArray> roles;
+    roles[Qt::UserRole] = "name";
+    return roles;
+}
 
 QVariant DemoModel::data(const QModelIndex &index, int role) const {
-    if(!index.isValid()) {
-        return QVariant();
-    }
-    if (role == NameRole) {
+    if (index.isValid()
+            && (role == Qt::UserRole || role == Qt::DisplayRole))
+    {
         const DevRes& devres = m_backing[index.row()];
         QString str = devres.uri + QString(" , ") + devres.name;
         return QVariant(str);
     }
     return QVariant();
-}
-
-
-QHash<int, QByteArray> DemoModel::roleNames() const {
-    QHash<int, QByteArray> roles;
-    roles[NameRole] = "name";
-    return roles;
 }
 
 int DemoModel::rowCount(const QModelIndex &) const
@@ -50,22 +40,7 @@ void DemoModel::activate(const int i)
 
    m_reply = m_coap.get(CoapRequest
                         (QUrl(m_backing[i].uri)));
-
    set_cur_uri(m_backing[i].uri);
-    // query on
-
-
-//    QString value = backing[i];
-
-//    // Remove the value from the old location.
-//    beginRemoveRows(QModelIndex(), i, i);
-//    backing.erase(backing.begin() + i);
-//    endRemoveRows();
-
-//    // Add it to the top.
-//    beginInsertRows(QModelIndex(), 0, 0);
-//    backing.insert(0, value);
-//    endInsertRows();
 }
 
 
@@ -89,15 +64,9 @@ void DemoModel::refresh()
                 m_reply = m_coap.get(CoapRequest
                                      (QUrl("coap://" + dev_addr.toString()
                                            + "/.well-known/core")));
-                                    // + "/led1")));
             }
         }
     }
-
-    //static int i = 0;
-    //++i;
-    //m_reply = m_coap.put(CoapRequest(QUrl("coap://172.28.172.5/led1")), QByteArray( 1, i % 2 ? 1 : 255));
-    //if (m_reply->isFinished())    {    }
 
     if (m_backing.size())
     {
@@ -144,7 +113,7 @@ void DemoModel::onReplyFinished(CoapReply *reply)
                 qDebug() << res_str;
                 if (res_str.length() < 4)
                     continue;
-                res_str.chop(1); // chip last'>'
+                res_str.chop(1); // chop last'>'
                 res_str = res_str.right(res_str.length() - 2); // cutoff first '</'
 
                 reply_dev_res.uri = reply->request().url().toString();
@@ -176,11 +145,11 @@ void DemoModel::onReplyFinished(CoapReply *reply)
     return;
 }
 
-void DemoModel::onNotificationReceived(const CoapObserveResource &resource, const int &notificationNumber, const QByteArray &payload)
+void DemoModel::onNotificationReceived(const CoapObserveResource &resource,
+                                       const int &notificationNumber,
+                                       const QByteArray &payload)
 {
-    qDebug() << QString("Notification #%1").arg(notificationNumber) << "from" << resource.url().toString() << endl << QString::fromUtf8(payload) << endl;
-
-//    if (textObject) {
-//        textObject->setProperty("light", QString::fromUtf8(payload));
-//    }
+    qDebug() << QString("Notification #%1").arg(notificationNumber)
+             << "from" << resource.url().toString() << endl
+             << QString::fromUtf8(payload) << endl;
 }
