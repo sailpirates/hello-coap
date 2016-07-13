@@ -47,4 +47,4 @@ SAILFISHAPP_ICONS = 86x86 108x108 128x128 256x256
 # modify the localized app name in the the .desktop file.
 # TRANSLATIONS += translations/hello-coap-de.ts
 
-include(src/qtcoap/coap/coap.pri)
+include(src/coap/coap.pri)
