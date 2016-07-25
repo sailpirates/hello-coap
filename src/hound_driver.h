@@ -14,6 +14,6 @@
 #include <QString>
 #include <QByteArray>
 
-extern QByteArray hound_driver(QString audioUrl);
+extern QByteArray hound_driver(const QString& audioUrl, const QString& mode);
 
 #endif /* HOUND_DRIVER_H */

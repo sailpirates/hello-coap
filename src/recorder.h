@@ -16,8 +16,8 @@ public:
     const bool& recording() const;
     QUrl get_raw_audio();
 public slots:
-    Q_INVOKABLE void record();
-    Q_INVOKABLE void stop();
+    Q_INVOKABLE void record(const QString&);
+    Q_INVOKABLE void stop(const QString&);
     Q_INVOKABLE QString getTextCommand();
     Q_INVOKABLE QString getSynthesizedAudioURL();
 signals:
@@ -25,7 +25,7 @@ signals:
     void textCommandChanged();
     void synthesizedAudioURLChanged();
 private:
-    QString speechToText(QUrl audioUrl);
+    QString speechToText(const QUrl& audioUrl, const QString& mode);
     QAudioRecorder* qAudioRecorder;
     QQueue<QUrl> mediaContentUrls;
     QQueue<QJsonDocument> jsonResults;

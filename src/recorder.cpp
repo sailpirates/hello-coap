@@ -83,9 +83,13 @@ QString AudioRecorder::getSynthesizedAudioURL()
     return synthesizedAudioURL;
 }
 
-void AudioRecorder :: record() {
+void AudioRecorder :: record(const QString& mode) {
+    qDebug() << mode;
+
     QDateTime currentDate = QDateTime::currentDateTime();
-    QString location = AUDIO_FOLDER + "recording-" + currentDate.toString("yyyyMMddHHmmss") + ".flac";
+    QString location = AUDIO_FOLDER + "recording-" + currentDate.toString("yyyyMMddHHmmss");
+    location += (mode == "watson")? ".flac": ".wav";
+
     mediaContentUrls.push_back(QUrl(location));
 
     if(!QDir(AUDIO_FOLDER).exists()) {
@@ -97,7 +101,12 @@ void AudioRecorder :: record() {
 
     int selectedSampleRate = 44000;
     QAudioEncoderSettings settings;
-    settings.setCodec("audio/FLAC");
+
+    if (mode == "watson") {
+        settings.setCodec("audio/FLAC");
+    } else {
+        settings.setCodec("audio/PCM");
+    }
     settings.setEncodingMode(QMultimedia::TwoPassEncoding);
     settings.setQuality(QMultimedia::VeryHighQuality);
     settings.setSampleRate(selectedSampleRate);
@@ -105,14 +114,14 @@ void AudioRecorder :: record() {
     qAudioRecorder->setAudioInput("pulseaudio:");
     qAudioRecorder->setEncodingSettings(settings);
     qAudioRecorder->setOutputLocation(QUrl(location));
-    qAudioRecorder->setContainerFormat("raw");
+    // qAudioRecorder->setContainerFormat("wav");
 
     qAudioRecorder->record();
     bRecording = true;
     emit recordingChanged();
 }
 
-void AudioRecorder :: stop() {
+void AudioRecorder :: stop(const QString& mode) {
     qAudioRecorder->stop();
     bRecording = false;
     emit recordingChanged();
@@ -121,16 +130,16 @@ void AudioRecorder :: stop() {
     {
         QUrl audioUrl = mediaContentUrls.front();
         mediaContentUrls.pop_front();
-        speechToText(audioUrl);
+        speechToText(audioUrl, mode);
         emit textCommandChanged();
     }
-    synthesizedAudioURL = "https://506cd4bb-67e7-43dc-850a-e612ba3f7c67:VlmbQGTglXMe@stream.watsonplatform.net/text-to-speech/api/v1/synthesize?accept=audio/wav&text=\"You said %1\"&voice=en-US_AllisonVoice";
+    synthesizedAudioURL = "https://39898ae0-c9aa-4ade-8849-b0c879544e22:0QO1ON0gBk7U@stream.watsonplatform.net/text-to-speech/api/v1/synthesize?accept=audio/wav&text=\"You said %1\"&voice=en-US_AllisonVoice";
     synthesizedAudioURL = synthesizedAudioURL.arg(textCommand);
     emit synthesizedAudioURLChanged();
 }
 
-QString AudioRecorder::speechToText(QUrl audioUrl) {
-    QByteArray curlRes = hound_driver(audioUrl.toString());
+QString AudioRecorder::speechToText(const QUrl& audioUrl, const QString& mode) {
+    QByteArray curlRes = hound_driver(audioUrl.toString(), mode);
     jsonResults.push_back(QJsonDocument::fromJson(curlRes));
 
     qDebug() << curlRes;
