@@ -33,7 +33,7 @@ import Sailfish.Silica 1.0
 
 
 Page {
-    id: page
+    id: page2
     SilicaFlickable {
         anchors.fill: parent
         contentHeight: column.height

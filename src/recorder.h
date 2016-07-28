@@ -26,13 +26,13 @@ signals:
     void synthesizedAudioURLChanged();
 private:
     QString speechToText(const QUrl& audioUrl, const QString& mode);
-    QAudioRecorder* qAudioRecorder;
+    QAudioRecorder _recorder;
     QQueue<QUrl> mediaContentUrls;
     QQueue<QJsonDocument> jsonResults;
     QString textCommand;
     QString synthesizedAudioURL;
 
-    bool bRecording;
+    bool _is_recording;
 };
 
 #endif // RECORDER

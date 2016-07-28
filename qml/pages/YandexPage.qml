@@ -4,9 +4,9 @@ import org.sailpirates.components 1.0
 import QtMultimedia 5.0
 
 Page {
-    id: page
+    id: stt_page
 
-    AudioRecorder{
+    AudioRecorder {
         id: recorder
         onTextCommandChanged: {
             console.log(textCommand)
@@ -26,31 +26,21 @@ Page {
         }
     }
 
-    // To enable PullDownMenu, place our content in a SilicaFlickable
-    SilicaFlickable {
-        anchors.fill: parent
+    TextField {
+        id: textField
+        anchors.top: parent.top
+        width: parent.width
+        placeholderText: recorder.textCommand
+    }
 
-        // Place our content in a Column.  The PageHeader is always placed at the top
-        // of the page, followed by our content.
-        TextField {
-            id: text
-            anchors.bottom: parent.bottom
-            width: parent.width
-            label: "Type command..."
-            placeholderText: "Type command"
-        }
-
-        TextField {
-            id: textField
-            anchors.top: parent.top
-            width: parent.width
-            placeholderText: recorder.textCommand
-        }
+    Column {
+        width: parent.width
+        anchors.bottom: parent.bottom
 
         Button {
             id: rec_btn
             text: "START RECORDING"
-            anchors.bottom: text.top
+
             onClicked: {
                 if (recorder.recording) {
                     rec_btn.text = "START RECORDING"
@@ -62,6 +52,14 @@ Page {
                     recorder.record("yandex");
                 }
             }
+        }
+
+        TextField {
+            width: parent.width
+            id: text
+            enabled: !recorder.recording
+            label: "Type command..."
+            placeholderText: "Type command"
         }
     }
 }

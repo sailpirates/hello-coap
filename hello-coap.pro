@@ -29,6 +29,7 @@ OTHER_FILES += qml/hello-coap.qml \
     qml/pages/FirstPage.qml \
     qml/pages/SecondPage.qml \
     qml/pages/ThirdPage.qml \
+    qml/pages/YandexPage.qml \
     rpm/hello-coap.changes.in \
     rpm/hello-coap.spec \
     rpm/hello-coap.yaml \

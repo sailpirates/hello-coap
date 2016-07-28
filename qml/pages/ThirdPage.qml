@@ -4,7 +4,7 @@ import org.sailpirates.components 1.0
 import QtMultimedia 5.0
 
 Page {
-    id: page
+    id: page3
 
     AudioRecorder{
         id: recorder
@@ -55,11 +55,11 @@ Page {
                 if (recorder.recording) {
                     rec_btn.text = "START RECORDING"
                     console.log('STOP RECORDING');
-                    recorder.stop();
+                    recorder.stop("watson");
                 } else {
                     console.log('START RECORDING');
                     rec_btn.text = "RECORDING... PRESS TO STOP"
-                    recorder.record();
+                    recorder.record("watson");
                 }
             }
         }

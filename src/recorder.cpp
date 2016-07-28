@@ -14,27 +14,14 @@
 
 const QString AUDIO_FOLDER = "/home/nemo/.voice_project/";
 
-AudioRecorder::AudioRecorder(QObject *parent): QObject(parent) {
-    QAudioEncoderSettings audioEncoderSettings;
-    audioEncoderSettings.setCodec("audio/speex");
-    audioEncoderSettings.setBitRate(16);
-    audioEncoderSettings.setQuality(QMultimedia::VeryHighQuality);
-    audioEncoderSettings.setSampleRate(16000);
-    audioEncoderSettings.setEncodingMode(QMultimedia::TwoPassEncoding);
-
-    qAudioRecorder = new QAudioRecorder(this);
-    qAudioRecorder->setContainerFormat("ogg");
-    qAudioRecorder->setEncodingSettings(audioEncoderSettings);
-
-    QDir audioDir(AUDIO_FOLDER);
-    if (!audioDir.exists()) {
-        audioDir.mkpath(AUDIO_FOLDER);
-    }
-    bRecording = false;
-}
+AudioRecorder::AudioRecorder(QObject *parent):
+    QObject(parent),
+    _recorder(this),
+    _is_recording(false)
+{}
 
 const bool& AudioRecorder::recording() const {
-    return bRecording;
+    return _is_recording;
 }
 
 const QString TURN_ON = "turn on";
@@ -83,47 +70,49 @@ QString AudioRecorder::getSynthesizedAudioURL()
     return synthesizedAudioURL;
 }
 
-void AudioRecorder :: record(const QString& mode) {
-    qDebug() << mode;
+void AudioRecorder::record(const QString& mode) {
+    if (!QDir(AUDIO_FOLDER).exists()
+            && !QDir().mkpath(AUDIO_FOLDER))
+        return;
 
-    QDateTime currentDate = QDateTime::currentDateTime();
-    QString location = AUDIO_FOLDER + "recording-" + currentDate.toString("yyyyMMddHHmmss");
-    location += (mode == "watson")? ".flac": ".wav";
+    QString location = AUDIO_FOLDER + "recording-"
+            + QDateTime::currentDateTime().toString("yyyyMMddHHmmss");
 
-    mediaContentUrls.push_back(QUrl(location));
-
-    if(!QDir(AUDIO_FOLDER).exists()) {
-        bool madeDirs = QDir().mkpath(AUDIO_FOLDER);
-        if(!madeDirs) {
-            return;
-        }
-    }
-
-    int selectedSampleRate = 44000;
     QAudioEncoderSettings settings;
-
-    if (mode == "watson") {
+    if (mode == "watson")
+    {
         settings.setCodec("audio/FLAC");
-    } else {
-        settings.setCodec("audio/PCM");
+        settings.setEncodingMode(QMultimedia::TwoPassEncoding);
+        settings.setQuality(QMultimedia::VeryHighQuality);
+
+        settings.setSampleRate(44100);
+        location += ".flac";
     }
-    settings.setEncodingMode(QMultimedia::TwoPassEncoding);
-    settings.setQuality(QMultimedia::VeryHighQuality);
-    settings.setSampleRate(selectedSampleRate);
+    else
+    {
+        settings.setCodec("audio/PCM");
+        settings.setEncodingMode(QMultimedia::TwoPassEncoding);
+        settings.setQuality(QMultimedia::VeryHighQuality);
 
-    qAudioRecorder->setAudioInput("pulseaudio:");
-    qAudioRecorder->setEncodingSettings(settings);
-    qAudioRecorder->setOutputLocation(QUrl(location));
-    // qAudioRecorder->setContainerFormat("wav");
+        location += ".wav";
+        _recorder.setContainerFormat("wav");
+    }
+    _recorder.setAudioSettings(settings);
+    _recorder.setAudioInput("pulseaudio:");
 
-    qAudioRecorder->record();
-    bRecording = true;
+    QUrl location_url(location);
+    _recorder.setOutputLocation(location_url);
+    mediaContentUrls.push_back(location_url);
+
+    _recorder.record();
+
+    _is_recording = true;
     emit recordingChanged();
 }
 
 void AudioRecorder :: stop(const QString& mode) {
-    qAudioRecorder->stop();
-    bRecording = false;
+    _recorder.stop();
+    _is_recording = false;
     emit recordingChanged();
 
     if (!mediaContentUrls.empty())
@@ -133,7 +122,7 @@ void AudioRecorder :: stop(const QString& mode) {
         speechToText(audioUrl, mode);
         emit textCommandChanged();
     }
-    synthesizedAudioURL = "https://39898ae0-c9aa-4ade-8849-b0c879544e22:0QO1ON0gBk7U@stream.watsonplatform.net/text-to-speech/api/v1/synthesize?accept=audio/wav&text=\"You said %1\"&voice=en-US_AllisonVoice";
+    synthesizedAudioURL = "https://39898ae0-c9aa-4ade-8849-b0c879544e22:0QO1ON0gBk7U@stream.watsonplatform.net/text-to-speech/api/v1/synthesize?accept=audio/x-wav&text=\"You said %1\"&voice=en-US_AllisonVoice";
     synthesizedAudioURL = synthesizedAudioURL.arg(textCommand);
     emit synthesizedAudioURLChanged();
 }
