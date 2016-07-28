@@ -58,13 +58,8 @@ Page
         {
             MenuItem
             {
-                text: "Watson Voice Input"
-                onClicked: pageStack.push(Qt.resolvedUrl("ThirdPage.qml"));
-            }
-            MenuItem
-            {
-                text: "Yandex Voice Input"
-                onClicked: pageStack.push(Qt.resolvedUrl("YandexPage.qml"));
+                text: "Voice Input"
+                onClicked: pageStack.push(Qt.resolvedUrl("VoicePage.qml"));
             }
         }
 

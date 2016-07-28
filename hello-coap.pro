@@ -16,20 +16,17 @@ CONFIG += sailfishapp c++11
 QT += multimedia
 
 HEADERS += src/demomodel.h \
-           src/hound_driver.h \
-           src/recorder.h
+           src/tts.h
 
 SOURCES += src/hello-coap.cpp \
            src/demomodel.cpp \
-           src/recorder.cpp \
-           src/hound_driver.cpp
+           src/tts.cpp
 
 OTHER_FILES += qml/hello-coap.qml \
-    qml/cover/CoverPage.qml \
+    qml/pages/CoverPage.qml \
     qml/pages/FirstPage.qml \
     qml/pages/SecondPage.qml \
-    qml/pages/ThirdPage.qml \
-    qml/pages/YandexPage.qml \
+    qml/pages/VoicePage.qml \
     rpm/hello-coap.changes.in \
     rpm/hello-coap.spec \
     rpm/hello-coap.yaml \
