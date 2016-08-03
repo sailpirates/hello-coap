@@ -58,12 +58,10 @@ void DemoModel::discover()
         {
             if (addr.ip().protocol() != QAbstractSocket::IPv4Protocol)
                 continue;
-            m_reply = m_coap.get(CoapRequest(QUrl("coap://"
-                                                  + addr.broadcast().toString()
-                                                  + "/.well-known-core")));
-            qDebug() << QString("coap://"
-                                + addr.broadcast().toString()
-                                + "/.well-known-core");
+            QString str_url = "coap://" + addr.broadcast().toString()
+                    + "/.well-known-core";
+            qDebug() << str_url;
+            m_reply = m_coap.get(CoapRequest(QUrl(str_url)));
         }
     }
 
