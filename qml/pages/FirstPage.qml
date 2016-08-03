@@ -34,7 +34,7 @@ import Sailfish.Silica 1.0
 
 Page
 {
-    id: page
+    id: page1
 
 //    ListModel {
 //        id: dummy
@@ -59,7 +59,7 @@ Page
             MenuItem
             {
                 text: "Voice Input"
-                onClicked: pageStack.push(Qt.resolvedUrl("ThirdPage.qml")); // fuck!
+                onClicked: pageStack.push(Qt.resolvedUrl("VoicePage.qml"));
             }
         }
 
@@ -74,15 +74,15 @@ Page
 
         delegate: BackgroundItem {
             Label {
-                // qml model-delegate-view thing is a complete unholy mess
+                // qml model-delegate-view thing is strange
                 // you can't display model data() with displayRole, it works only with widgets
-                // so, you can't reuse displayRole and it's ugly and stupid -- need to implement nameRoles and
-                // I hope this is not true.
+                // so, you can't reuse displayRole -- need to implement nameRoles
+                // not nice at all
                 // if you uncomment dummy ListModel from top
                 // and replace the text entry at the bottom with
                 // text: modelData
                 // you get the good picture and all is fine
-                // whe trying to do so with abstractmodel you will get
+                // when trying to do the same with abstractmodel you will get
                 // ReferenceError: textRole is not defined
                 text: name
                 x: Theme.horizontalPageMargin

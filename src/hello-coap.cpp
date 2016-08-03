@@ -34,11 +34,11 @@
 
 #include <sailfishapp.h>
 #include "demomodel.h"
-#include "recorder.h"
+#include "tts.h"
 
 int main(int argc, char *argv[])
 {
-    qmlRegisterType<AudioRecorder>("org.sailpirates.components", 1, 0, "AudioRecorder");
+    qmlRegisterType<TTS_Manager>("org.sailpirates.components", 1, 0, "TTS");
     qmlRegisterType<DemoModel>("com.example", 1, 0, "DemoModel");
     return SailfishApp::main(argc, argv);
 }
