@@ -44,27 +44,26 @@ void DemoModel::activate(const int i)
 }
 
 
-void DemoModel::refresh()
+void DemoModel::discover()
 {
-
-    QList<QHostAddress> addr_list = QNetworkInterface::allAddresses();
-    foreach (QHostAddress addr, addr_list)
+    foreach (QNetworkInterface iface, QNetworkInterface::allInterfaces())
     {
-        if (addr.protocol() == QAbstractSocket::IPv4Protocol
-                && addr != QHostAddress(QHostAddress::LocalHost))
+        int flags = iface.flags();
+        if (flags & QNetworkInterface::IsLoopBack)
+            continue;
+        if (!(flags & QNetworkInterface::IsUp))
+            continue;
+
+        foreach (QNetworkAddressEntry addr, iface.addressEntries())
         {
-            quint32 nhost = addr.toIPv4Address();
-            quint32 n = nhost & 0xFFFFFF00;
-            for (quint32 i = 1; i < 0xFF; ++i)
-            {
-                quint32 ndev = n + i;
-                if (ndev == nhost)
-                    continue;
-                QHostAddress dev_addr(ndev);
-                m_reply = m_coap.get(CoapRequest
-                                     (QUrl("coap://" + dev_addr.toString()
-                                           + "/.well-known/core")));
-            }
+            if (addr.ip().protocol() != QAbstractSocket::IPv4Protocol)
+                continue;
+            m_reply = m_coap.get(CoapRequest(QUrl("coap://"
+                                                  + addr.broadcast().toString()
+                                                  + "/.well-known-core")));
+            qDebug() << QString("coap://"
+                                + addr.broadcast().toString()
+                                + "/.well-known-core");
         }
     }
 
@@ -73,7 +72,7 @@ void DemoModel::refresh()
         beginRemoveRows(QModelIndex(), 0, m_backing.size() - 1);
         m_backing.clear();
         endRemoveRows();
-     }
+    }
 }
 
 void DemoModel::send_light(char value)

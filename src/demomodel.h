@@ -19,7 +19,7 @@ public:
     QHash<int, QByteArray> roleNames() const;
 
     Q_INVOKABLE void activate(const int i);
-    Q_INVOKABLE void refresh();
+    Q_INVOKABLE void discover();
     Q_INVOKABLE void send_light(char value);
 
     Q_PROPERTY(QString cur_uri READ cur_uri WRITE set_cur_uri NOTIFY cur_uriChanged)

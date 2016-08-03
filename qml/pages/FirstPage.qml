@@ -51,7 +51,7 @@ Page
             MenuItem
             {
                 text: "Discover"
-                onClicked: dmodel.refresh();
+                onClicked: dmodel.discover();
             }
         }
         PushUpMenu
